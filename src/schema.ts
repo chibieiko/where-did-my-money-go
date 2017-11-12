@@ -1,10 +1,11 @@
 import {
     GraphQLFloat,
-    GraphQLInt, GraphQLList,
+    GraphQLList,
     GraphQLObjectType,
     GraphQLSchema,
     GraphQLString
 } from "graphql";
+import {db} from './connector';
 
 const UserType = new GraphQLObjectType({
     name: 'User',
@@ -14,8 +15,7 @@ const UserType = new GraphQLObjectType({
             type: GraphQLString
         },
         username: {
-            type: GraphQLString,
-            resolve: data => data.username
+            type: GraphQLString
         },
         expenses: {
             type: new GraphQLList(ExpenseType)
@@ -81,8 +81,7 @@ export const schema = new GraphQLSchema({
                             "date": "2017-11-12T10:15:00",
                             "category": {
                                 "id": 1,
-                                "name": "Food",
-                                "expenses": [1, 2]
+                                "name": "Food"
                             }
                         }
                     ]
