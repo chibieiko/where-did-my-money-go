@@ -1,17 +1,23 @@
 import {
-    GraphQLFloat,
+    GraphQLFloat, GraphQLInt,
     GraphQLList,
     GraphQLObjectType,
     GraphQLSchema,
     GraphQLString
 } from "graphql";
 
+import db from './models';
+
+db.user.findAll().then(result => {
+    console.log(result);
+});
+
 const UserType = new GraphQLObjectType({
     name: 'User',
     description: 'Owner of the budget.',
     fields: () => ({
         id: {
-            type: GraphQLString
+            type: GraphQLInt
         },
         username: {
             type: GraphQLString
@@ -30,7 +36,7 @@ const ExpenseType = new GraphQLObjectType({
     description: 'An expense of the user',
     fields: () => ({
         id: {
-            type: GraphQLString
+            type: GraphQLInt
         },
         price: {
             type: GraphQLFloat
@@ -49,7 +55,7 @@ const CategoryType = new GraphQLObjectType({
     description: 'A category for expenses',
     fields: () => ({
         id: {
-            type: GraphQLString
+            type: GraphQLInt
         },
         name: {
             type: GraphQLString
@@ -68,7 +74,7 @@ export const schema = new GraphQLSchema({
             user: {
                 type: UserType,
                 args: {
-                    id: {type: GraphQLString}
+                    id: {type: GraphQLInt}
                 },
                 resolve: (root, args) => ({
                     "id": 1,
