@@ -5,7 +5,6 @@ import {
     GraphQLSchema,
     GraphQLString
 } from "graphql";
-import {db} from './connector';
 
 const UserType = new GraphQLObjectType({
     name: 'User',

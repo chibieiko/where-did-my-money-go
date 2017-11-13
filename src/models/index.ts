@@ -1,8 +1,8 @@
-import Sequelize from 'sequelize';
-import * as fs from 'fs';
-import * as path from 'path';
+let Sequelize = require('sequelize');
+let fs = require('fs');
+let path = require('path');
 
-import * as secret from '../secret.json';
+let secret = require ('../../secret.json');
 
 // Initialize database.
 const sequelize = new Sequelize(secret.databaseName, secret.username, secret.password, {
@@ -14,10 +14,10 @@ let db = {};
 
 fs.readdirSync(__dirname)
     .filter(file => {
-        return (file.indexOf('.') !== 0) && (file !== 'index.js');
+        return (file.indexOf('.') !== 0) && (file !== 'index.js') && (path.extname(file) !== '.ts');
     })
     .forEach(file => {
-        let model = sequelize.import(path.join(__dirname, file));
+        let model = sequelize.import(path.join(__dirname, '../models', file));
         db[model.name] = model;
     });
 
@@ -31,12 +31,3 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 export default db;
-
-/*sequelize.authenticate()
-    .then(() => {
-        console.log("connection successful!");
-    })
-    .catch(err => {
-        console.error('Connection failed:', err);
-    });
-    */
