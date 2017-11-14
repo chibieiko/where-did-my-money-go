@@ -8,10 +8,6 @@ import {
 
 import db from './models';
 
-db.user.findAll().then(result => {
-    console.log(result);
-});
-
 const UserType = new GraphQLObjectType({
     name: 'User',
     description: 'Owner of the budget.',
@@ -23,10 +19,27 @@ const UserType = new GraphQLObjectType({
             type: GraphQLString
         },
         expenses: {
-            type: new GraphQLList(ExpenseType)
+            type: new GraphQLList(ExpenseType),
+            resolve: user => {
+                return user.getExpenses();
+            }
         },
         categories: {
-            type: new GraphQLList(CategoryType)
+            type: new GraphQLList(CategoryType),
+            args: {
+                id: {type: GraphQLInt}
+            },
+            resolve: (user, args) => {
+                console.log('USER ON TÄMÄ', user);
+                console.log('ARGS ON TÄMÄ', args);
+
+                if (args !== {}) {
+                    return db.category
+                        .findAll({where: {...args, userId: user.id}})
+                } else {
+                    return user.getCategories();
+                }
+            }
         }
     })
 });
@@ -45,7 +58,10 @@ const ExpenseType = new GraphQLObjectType({
             type: GraphQLString
         },
         category: {
-            type: CategoryType
+            type: CategoryType,
+            resolve: (root, args) => {
+                // todo get all categories where expense.categoryId == category.id
+            }
         }
     })
 });
@@ -72,25 +88,13 @@ export const schema = new GraphQLSchema({
         description: 'query',
         fields: () => ({
             user: {
-                type: UserType,
+                type: new GraphQLList(UserType),
                 args: {
                     id: {type: GraphQLInt}
                 },
-                resolve: (root, args) => ({
-                    "id": 1,
-                    "username": "John Doe",
-                    "expenses": [
-                        {
-                            "id": 1,
-                            "price": 13,
-                            "date": "2017-11-12T10:15:00",
-                            "category": {
-                                "id": 1,
-                                "name": "Food"
-                            }
-                        }
-                    ]
-                })
+                resolve: (root, args) => (
+                    db.user.findAll({where: args})
+                )
             }
         })
     })
