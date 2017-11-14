@@ -2,7 +2,7 @@ let Sequelize = require('sequelize');
 let fs = require('fs');
 let path = require('path');
 
-let secret = require ('../../secret.json');
+let secret = require('../../secret.json');
 
 // Initialize database.
 const sequelize = new Sequelize(secret.databaseName, secret.username, secret.password, {
