@@ -20,7 +20,14 @@ const UserType = new GraphQLObjectType({
         },
         expenses: {
             type: new GraphQLList(ExpenseType),
-            resolve: user => {
+            args: {
+                id: {type: GraphQLInt}
+            },
+            resolve: (user, args) => {
+                if (args !== {}) {
+                    return db.expense
+                        .findAll({where: {...args, userId: user.id}})
+                }
                 return user.getExpenses();
             }
         },
@@ -30,9 +37,6 @@ const UserType = new GraphQLObjectType({
                 id: {type: GraphQLInt}
             },
             resolve: (user, args) => {
-                console.log('USER ON TÄMÄ', user);
-                console.log('ARGS ON TÄMÄ', args);
-
                 if (args !== {}) {
                     return db.category
                         .findAll({where: {...args, userId: user.id}})
