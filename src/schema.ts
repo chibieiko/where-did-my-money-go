@@ -63,9 +63,11 @@ const ExpenseType = new GraphQLObjectType({
         },
         category: {
             type: CategoryType,
-            resolve: (root, args) => {
-                // todo get all categories where expense.categoryId == category.id
-            }
+            resolve: expense => (
+                db.category.find({
+                    where: {id: expense.categoryId}
+                })
+            )
         }
     })
 });
