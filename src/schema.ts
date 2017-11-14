@@ -83,7 +83,12 @@ const CategoryType = new GraphQLObjectType({
             type: GraphQLString
         },
         expenses: {
-            type: new GraphQLList(ExpenseType)
+            type: new GraphQLList(ExpenseType),
+            resolve: category => (
+                db.expense.findAll({
+                    where: {categoryId: category.id}
+                })
+            )
         }
     })
 });

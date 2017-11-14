@@ -1,10 +1,16 @@
 module.exports = (sequelize, DataTypes) => {
     let Expense = sequelize.define('expense', {
         price: {
-            type: DataTypes.FLOAT
+            type: DataTypes.FLOAT,
+            allowNull: false
+        },
+        description: {
+            type: DataTypes.STRING
         },
         date: {
-            type: DataTypes.DATE
+            type: DataTypes.DATE,
+            defaultValue: sequelize.NOW,
+            allowNull: false
         }
     });
 
