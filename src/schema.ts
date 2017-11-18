@@ -9,36 +9,11 @@ import {
 import db from './models';
 import {mutations} from './mutations';
 import UserType from './types/UserType';
-import CategoryType from './types/CategoryType';
-
-export const ExpenseType = new GraphQLObjectType({
-    name: 'Expense',
-    description: 'An expense of the user',
-    fields: () => ({
-        id: {
-            type: GraphQLInt
-        },
-        price: {
-            type: GraphQLFloat
-        },
-        date: {
-            type: GraphQLString
-        },
-        category: {
-            type: CategoryType,
-            resolve: expense => (
-                db.category.find({
-                    where: {id: expense.categoryId}
-                })
-            )
-        }
-    })
-});
 
 export const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: 'Query',
-        description: 'query',
+        description: 'Root query',
         fields: () => ({
             user: {
                 type: new GraphQLList(UserType),

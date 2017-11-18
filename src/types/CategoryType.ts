@@ -3,10 +3,10 @@ import {
     GraphQLList,
     GraphQLObjectType,
     GraphQLString
-} from "graphql";
+} from 'graphql';
 
-import {ExpenseType} from "../schema";
-import db from "../models/index";
+import ExpenseType from './ExpenseType';
+import db from '../models/index';
 
 export default new GraphQLObjectType({
     name: 'Category',

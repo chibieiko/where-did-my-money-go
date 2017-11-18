@@ -5,7 +5,7 @@ import {
     GraphQLString
 } from 'graphql';
 
-import {ExpenseType} from '../schema';
+import ExpenseType from './ExpenseType';
 import CategoryType from './CategoryType';
 import db from '../models/index';
 
