@@ -3,9 +3,8 @@ import {GraphQLNonNull, GraphQLObjectType, GraphQLString} from "graphql";
 import UserType from './types/UserType';
 import db from './models';
 
-console.log("KÄYTTÄJÄ: ", UserType);
 
-export const mutations = new GraphQLObjectType({
+export default new GraphQLObjectType({
     name: 'Mutation',
     fields: {
         addUser: {

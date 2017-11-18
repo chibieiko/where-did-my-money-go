@@ -7,7 +7,7 @@ import {
 } from "graphql";
 
 import db from './models';
-import {mutations} from './mutations';
+import mutation from './mutations';
 import UserType from './types/UserType';
 
 export const schema = new GraphQLSchema({
@@ -25,5 +25,6 @@ export const schema = new GraphQLSchema({
                 )
             }
         })
-    })
+    }),
+    mutation
 });
