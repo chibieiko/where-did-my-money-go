@@ -9,6 +9,7 @@ import {
 import db from './models';
 import {mutations} from './mutations';
 import UserType from './types/UserType';
+import CategoryType from './types/CategoryType';
 
 export const ExpenseType = new GraphQLObjectType({
     name: 'Expense',
@@ -28,27 +29,6 @@ export const ExpenseType = new GraphQLObjectType({
             resolve: expense => (
                 db.category.find({
                     where: {id: expense.categoryId}
-                })
-            )
-        }
-    })
-});
-
-export const CategoryType = new GraphQLObjectType({
-    name: 'Category',
-    description: 'A category for expenses',
-    fields: () => ({
-        id: {
-            type: GraphQLInt
-        },
-        name: {
-            type: GraphQLString
-        },
-        expenses: {
-            type: new GraphQLList(ExpenseType),
-            resolve: category => (
-                db.expense.findAll({
-                    where: {categoryId: category.id}
                 })
             )
         }
