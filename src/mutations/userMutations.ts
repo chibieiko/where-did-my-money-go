@@ -1,4 +1,5 @@
 import {
+    GraphQLInt,
     GraphQLNonNull,
     GraphQLString
 } from "graphql";
@@ -22,5 +23,22 @@ export const addUser = {
                 console.log(error);
                 return error
             })
+    }
+};
+
+export const deleteUser = {
+    type: UserType,
+    args: {
+        id: {type: new GraphQLNonNull(GraphQLInt)}
+    },
+    resolve(parentValue, args) {
+        return db.user.destroy({
+            where: {
+                id: args.id
+            }
+        })
+            .then(result => {
+                return  {id: args.id};
+            });
     }
 };
