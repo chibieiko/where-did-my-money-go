@@ -7,48 +7,10 @@ import {
 } from "graphql";
 
 import db from './models';
+import {mutations} from './mutations';
+import UserType from './types/UserType';
 
-const UserType = new GraphQLObjectType({
-    name: 'User',
-    description: 'Owner of the budget.',
-    fields: () => ({
-        id: {
-            type: GraphQLInt
-        },
-        username: {
-            type: GraphQLString
-        },
-        expenses: {
-            type: new GraphQLList(ExpenseType),
-            args: {
-                id: {type: GraphQLInt}
-            },
-            resolve: (user, args) => {
-                if (args !== {}) {
-                    return db.expense
-                        .findAll({where: {...args, userId: user.id}})
-                }
-                return user.getExpenses();
-            }
-        },
-        categories: {
-            type: new GraphQLList(CategoryType),
-            args: {
-                id: {type: GraphQLInt}
-            },
-            resolve: (user, args) => {
-                if (args !== {}) {
-                    return db.category
-                        .findAll({where: {...args, userId: user.id}})
-                } else {
-                    return user.getCategories();
-                }
-            }
-        }
-    })
-});
-
-const ExpenseType = new GraphQLObjectType({
+export const ExpenseType = new GraphQLObjectType({
     name: 'Expense',
     description: 'An expense of the user',
     fields: () => ({
@@ -72,7 +34,7 @@ const ExpenseType = new GraphQLObjectType({
     })
 });
 
-const CategoryType = new GraphQLObjectType({
+export const CategoryType = new GraphQLObjectType({
     name: 'Category',
     description: 'A category for expenses',
     fields: () => ({
