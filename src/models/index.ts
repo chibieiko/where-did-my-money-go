@@ -4,13 +4,20 @@ let path = require('path');
 
 let secret = require('../../secret.json');
 
+
 // Initialize database.
 const sequelize = new Sequelize(secret.databaseName, secret.username, secret.password, {
     host: 'mydb.tamk.fi',
     dialect: 'mysql',
 });
 
-let db = {};
+let db = {
+    user: <any> null,
+    category: <any> null,
+    expense: <any> null,
+    sequelize: <any> null,
+    Sequelize: <any> null,
+};
 
 fs.readdirSync(__dirname)
     .filter(file => {
@@ -22,7 +29,7 @@ fs.readdirSync(__dirname)
     });
 
 Object.keys(db).forEach(modelName => {
-    if ('associate' in db[modelName]) {
+    if (db[modelName] && 'associate' in db[modelName]) {
         db[modelName].associate(db);
     }
 });

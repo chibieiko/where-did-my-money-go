@@ -1,6 +1,6 @@
 import {GraphQLNonNull, GraphQLObjectType, GraphQLString} from "graphql";
 
-import {UserType} from './schema';
+import UserType from './types/UserType';
 import db from './models';
 
 console.log("KÄYTTÄJÄ: ", UserType);
