@@ -1,0 +1,59 @@
+import {formatErrors, generateResponseType} from "../types/ResponseType";
+import ExpenseType from "../types/ExpenseType";
+import {GraphQLInt, GraphQLNonNull, GraphQLString} from "graphql";
+import db from "../models/index";
+
+export const addExpense = {
+    type: generateResponseType(ExpenseType, 'addExpenseResponse'),
+    args: {
+        price: {type: new GraphQLNonNull(GraphQLInt)},
+        description: {type: GraphQLString},
+        date: {type: GraphQLString},
+        userId: {type: new GraphQLNonNull(GraphQLInt)},
+        categoryId: {type: new GraphQLNonNull(GraphQLInt)}
+    },
+    resolve(parentValue, args) {
+        // check that user exists and he has that category
+        return db.user.find(
+            {include: [db.category]},
+            {where: {id: args.userId}})
+            .then(user => {
+                if (user && user.categories.some((category) => category.id == args.categoryId)) {
+                    // add expense
+                    let newExpense = db.expense.build({
+                        price: args.price,
+                        description: args.description,
+                        date: args.date,
+                        userId: args.userId,
+                        categoryId: args.categoryId
+                    });
+
+                    return newExpense.save()
+                        .then(category => {
+                            return {
+                                ok: true,
+                                result: category
+                            };
+                        })
+                        .catch(error => {
+                            return {
+                                ok: false,
+                                errors: formatErrors(error)
+                            };
+                        })
+                } else {
+                    return {
+                        ok: false,
+                        errors: formatErrors(null, 'userId & categoryId',
+                            'User with userId must exist and own a category that corresponds to given categoryId.')
+                    };
+                }
+            })
+            .catch(error => {
+                return {
+                    ok: false,
+                    errors: formatErrors(error)
+                };
+            })
+    }
+};

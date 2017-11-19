@@ -6,6 +6,7 @@ import {
     deleteCategory,
     updateCategory
 } from "./mutations/categoryMutations";
+import {addExpense} from "./mutations/expenseMutations";
 
 export default new GraphQLObjectType({
     name: 'Mutation',
@@ -15,6 +16,7 @@ export default new GraphQLObjectType({
         deleteUser,
         addCategory,
         updateCategory,
-        deleteCategory
+        deleteCategory,
+        addExpense
     }
 });
