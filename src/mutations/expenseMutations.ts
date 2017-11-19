@@ -2,6 +2,7 @@ import {formatErrors, generateResponseType} from "../types/ResponseType";
 import ExpenseType from "../types/ExpenseType";
 import {GraphQLInt, GraphQLNonNull, GraphQLString} from "graphql";
 import db from "../models/index";
+import CategoryType from "../types/CategoryType";
 
 export const addExpense = {
     type: generateResponseType(ExpenseType, 'addExpenseResponse'),
@@ -127,5 +128,38 @@ export const updateExpense = {
                     errors: formatErrors(error)
                 };
             });
+    }
+};
+
+export const deleteExpense = {
+    type: generateResponseType(CategoryType, 'deleteExpenseResponse'),
+    args: {
+        id: {type: new GraphQLNonNull(GraphQLInt)},
+        userId: {type: new GraphQLNonNull(GraphQLInt)}
+    },
+    resolve(parentValue, args) {
+        return db.expense.destroy({
+            where: {
+                ...args
+            }
+        })
+            .then(result => {
+                if (result == 1) {
+                    return {
+                        ok: true,
+                    };
+                } else {
+                    return {
+                        ok: false,
+                        errors: formatErrors(null)
+                    };
+                }
+            })
+            .catch(error => {
+                return {
+                    ok: false,
+                    errors: formatErrors(error)
+                };
+            })
     }
 };
