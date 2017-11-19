@@ -12,6 +12,7 @@
     "express-graphql": "^0.6.11",
     "fs": "0.0.1-security",
     "graphql": "^0.11.7",
+    "lodash.pick": "^4.4.0",
     "mysql2": "^1.4.2",
     "path": "^0.12.7",
     "sequelize": "^4.22.6",

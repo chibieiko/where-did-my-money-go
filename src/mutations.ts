@@ -1,13 +1,12 @@
-import {GraphQLNonNull, GraphQLObjectType, GraphQLString} from "graphql";
+import {GraphQLObjectType} from "graphql";
 
-import UserType from './types/UserType';
-import db from './models';
-import {addUser, deleteUser} from './mutations/userMutations';
+import {addUser, deleteUser, updateUser} from './mutations/userMutations';
 
 export default new GraphQLObjectType({
     name: 'Mutation',
     fields: {
         addUser,
+        updateUser,
         deleteUser
     }
 });
