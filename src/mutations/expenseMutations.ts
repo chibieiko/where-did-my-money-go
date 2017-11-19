@@ -57,3 +57,75 @@ export const addExpense = {
             })
     }
 };
+
+export const updateExpense = {
+    type: generateResponseType(ExpenseType, 'updateExpenseResponse'),
+    args: {
+        id: {type: new GraphQLNonNull(GraphQLInt)},
+        userId: {type: new GraphQLNonNull(GraphQLInt)},
+        categoryId: {type: GraphQLInt},
+        price: {type: GraphQLInt},
+        description: {type: GraphQLString},
+        date: {type: GraphQLString}
+    },
+    resolve: async (parentValue, args) => {
+        let includeArray = [db.user];
+        // Include user's categories if one wants to update categoryId.
+        if (args.categoryId) {
+            includeArray = [{
+                model: db.user,
+                include: [{
+                    model: db.category
+                }]
+            }];
+        }
+
+        let expense = await db.expense.find(
+            {include: includeArray},
+            {
+                where: {
+                    id: args.id,
+                    userId: args.userId
+                }
+            });
+
+        if (args.categoryId &&
+            expense.user.categories.filter(category => category.id === args.categoryId).length < 1) {
+            return {
+                ok: false,
+                errors: formatErrors(null, 'categoryId', 'User does not own given categoryId.')
+            };
+        }
+
+        return db.expense.update({
+                categoryId: args.categoryId,
+                price: args.price,
+                description: args.description,
+                date: args.date
+            },
+            {
+                where: {
+                    id: args.id,
+                    userId: args.userId
+                }
+            })
+            .then(result => {
+                if (result[0] == 1) {
+                    return {
+                        ok: true,
+                    };
+                } else {
+                    return {
+                        ok: false,
+                        errors: formatErrors(null)
+                    };
+                }
+            })
+            .catch(error => {
+                return {
+                    ok: false,
+                    errors: formatErrors(error)
+                };
+            });
+    }
+};
