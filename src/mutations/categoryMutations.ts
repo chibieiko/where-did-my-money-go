@@ -85,3 +85,36 @@ export const updateCategory = {
             })
     }
 };
+
+export const deleteCategory = {
+    type: generateResponseType(CategoryType, 'deleteCategoryResponse'),
+    args: {
+        id: {type: new GraphQLNonNull(GraphQLInt)},
+        userId: {type: new GraphQLNonNull(GraphQLInt)}
+    },
+    resolve(parentValue, args) {
+        return db.category.destroy({
+            where: {
+                ...args
+            }
+        })
+            .then(result => {
+                if (result == 1) {
+                    return {
+                        ok: true
+                    };
+                } else {
+                    return {
+                        ok: false,
+                        errors: formatErrors(null)
+                    };
+                }
+            })
+            .catch(error => {
+                return {
+                    ok: false,
+                    errors: formatErrors(error)
+                };
+            })
+    }
+};
