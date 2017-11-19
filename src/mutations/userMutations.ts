@@ -3,22 +3,13 @@ import {
     GraphQLNonNull,
     GraphQLString
 } from "graphql";
-const pick = require('lodash.pick');
 
 import db from "../models/index";
 import UserType from "../types/UserType";
-import UserResponseType from "../types/UserResponseType";
-
-const formatErrors = (error, path = 'Unknown', message = 'Something went wrong') => {
-    if (error && error instanceof db.sequelize.ValidationError) {
-        return error.errors.map(x => pick(x, ['path', 'message']));
-    }
-
-    return [{path: path, message: message}]
-};
+import {formatErrors, generateResponseType} from "../types/ResponseType";
 
 export const addUser = {
-    type: UserResponseType,
+    type: generateResponseType(UserType, 'addUserResponse'),
     args: {
         username: {type: new GraphQLNonNull(GraphQLString)}
     },
@@ -31,7 +22,7 @@ export const addUser = {
             .then(user => {
                 return {
                     ok: true,
-                    user: user
+                    result: user
                 }
             })
             .catch(error => {
@@ -44,13 +35,13 @@ export const addUser = {
 };
 
 export const updateUser = {
-    type: UserResponseType,
+    type: generateResponseType(UserType, 'updateUserResponse'),
     args: {
         id: {type: new GraphQLNonNull(GraphQLInt)},
         username: {type: new GraphQLNonNull(GraphQLString)}
     },
-    resolve(parentValue, args, context) {
-        db.user.update({
+    resolve(parentValue, args) {
+        return db.user.update({
                 username: args.username
             },
             {
@@ -59,22 +50,28 @@ export const updateUser = {
                 }
             })
             .then(result => {
-                console.log(result);
                 if (result[0] == 1) {
-                    return result;
+                    return {
+                        ok: true
+                    };
                 } else {
-
-                    console.log("KONTEKSTI", context);
-                    //context.Errors.Add(new ExecutionError("Nothing to update with given id"));
-                    return null;
+                    return {
+                        ok: false,
+                        errors: formatErrors(null, 'id', 'Nothing to update with given id.')
+                    };
                 }
-                // todo return updated result if result == 1 else custom message
+            })
+            .catch(error => {
+                return {
+                    ok: false,
+                    errors: formatErrors(error)
+                };
             });
     }
 };
 
 export const deleteUser = {
-    type: UserType,
+    type: generateResponseType(UserType, 'deleteUserResponse'),
     args: {
         id: {type: new GraphQLNonNull(GraphQLInt)}
     },
@@ -85,7 +82,22 @@ export const deleteUser = {
             }
         })
             .then(result => {
-                return {id: args.id};
+                if (result == 1) {
+                    return {
+                        ok: true
+                    }
+                } else {
+                    return {
+                        ok: false,
+                        errors: formatErrors(null, 'id', 'Nothing to delete with given id')
+                    };
+                }
+            })
+            .catch(error => {
+                return {
+                    ok: false,
+                    errors: formatErrors(error)
+                }
             });
     }
 };
