@@ -23,14 +23,14 @@ export const addUser = {
                 return {
                     ok: true,
                     result: user
-                }
+                };
             })
             .catch(error => {
                 return {
                     ok: false,
                     errors: formatErrors(error)
                 };
-            })
+            });
     }
 };
 
