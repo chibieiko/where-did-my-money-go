@@ -47,3 +47,41 @@ export const addCategory = {
             });
     }
 };
+
+export const updateCategory = {
+    type: generateResponseType(CategoryType, 'updateCategoryResponse'),
+    args: {
+        id: {type: new GraphQLNonNull(GraphQLInt)},
+        userId: {type: new GraphQLNonNull(GraphQLInt)},
+        name: {type: new GraphQLNonNull(GraphQLString)}
+    },
+    resolve(parentValue, args) {
+        return db.category.update({
+                name: args.name
+            },
+            {
+                where: {
+                    id: args.id,
+                    userId: args.userId
+                }
+            })
+            .then(result => {
+                if (result[0] == 1) {
+                    return {
+                        ok: true
+                    };
+                } else {
+                    return {
+                        ok: false,
+                        errors: formatErrors(null)
+                    };
+                }
+            })
+            .catch(error => {
+                return {
+                    ok: false,
+                    errors: formatErrors(error)
+                };
+            })
+    }
+};

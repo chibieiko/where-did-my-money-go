@@ -1,7 +1,7 @@
 import {GraphQLObjectType} from "graphql";
 
 import {addUser, deleteUser, updateUser} from './mutations/userMutations';
-import {addCategory} from "./mutations/categoryMutations";
+import {addCategory, updateCategory} from "./mutations/categoryMutations";
 
 export default new GraphQLObjectType({
     name: 'Mutation',
@@ -9,6 +9,7 @@ export default new GraphQLObjectType({
         addUser,
         updateUser,
         deleteUser,
-        addCategory
+        addCategory,
+        updateCategory
     }
 });
