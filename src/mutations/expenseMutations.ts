@@ -1,13 +1,13 @@
 import {formatErrors, generateResponseType} from "../types/ResponseType";
 import ExpenseType from "../types/ExpenseType";
-import {GraphQLInt, GraphQLNonNull, GraphQLString} from "graphql";
+import {GraphQLFloat, GraphQLInt, GraphQLNonNull, GraphQLString} from "graphql";
 import db from "../models/index";
 import CategoryType from "../types/CategoryType";
 
 export const addExpense = {
     type: generateResponseType(ExpenseType, 'addExpenseResponse'),
     args: {
-        price: {type: new GraphQLNonNull(GraphQLInt)},
+        price: {type: new GraphQLNonNull(GraphQLFloat)},
         description: {type: GraphQLString},
         date: {type: GraphQLString},
         userId: {type: new GraphQLNonNull(GraphQLInt)},
@@ -65,7 +65,7 @@ export const updateExpense = {
         id: {type: new GraphQLNonNull(GraphQLInt)},
         userId: {type: new GraphQLNonNull(GraphQLInt)},
         categoryId: {type: GraphQLInt},
-        price: {type: GraphQLInt},
+        price: {type: GraphQLFloat},
         description: {type: GraphQLString},
         date: {type: GraphQLString}
     },
